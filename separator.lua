@@ -4,7 +4,7 @@ local msg = require "mp.msg"
 table.unpack = table.unpack or unpack -- Workaround for Lua 5.1
 
 local OUTPUT_LOCATION = mp.get_property("working-directory")
-						or os.getenv("MPV_BACKUPER_OUTPUT")
+						or os.getenv("MPV_SEPARATOR_OUTPUT")
 
 local BACKUP_LOCATION = ""
 local FILES_SAVED = 0
@@ -35,7 +35,7 @@ end
 local function create_backup_dir()
 	if #BACKUP_LOCATION == 0 then
 		BACKUP_LOCATION = execute_command(
-			"mktemp -d -p %s backuper.XXXXXX",
+			"mktemp -d -p %s separator.XXXXXX",
 			OUTPUT_LOCATION
 		)
 	end
