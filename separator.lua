@@ -35,7 +35,7 @@ end
 local function create_backup_dir()
 	if #BACKUP_LOCATION == 0 then
 		BACKUP_LOCATION = execute_command(
-			"mktemp -d -p %s separator.XXXXXX",
+			'mktemp -d -p "%s" separator.XXXXXX',
 			OUTPUT_LOCATION
 		)
 	end
@@ -44,7 +44,7 @@ local function create_backup_dir()
 end
 
 local function copy_file(source, destination)
-	result = execute_command("cp -nv %s %s", source, destination)
+	result = execute_command('cp -nv "%s" "%s"', source, destination)
 	
 	skipped, _ = result:find('^skipped')
 
