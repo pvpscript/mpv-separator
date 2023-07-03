@@ -43,25 +43,33 @@ local function create_backup_dir()
 	return BACKUP_LOCATION
 end
 
-local function copy_file(source, destination)
-	result = execute_command('cp -nv "%s" "%s"', source, destination)
+local function operate_file(op, source, destination)
+	result = execute_command('%s -nv "%s" "%s"', op, source, destination)
 	
 	skipped, _ = result:find('^skipped')
 
 	return result, skipped == 1
 end
 
+local function copy_file(source, destination)
+	return operate_file("cp", source, destination)
+end
+
+local function move_file(source, destination)
+	return operate_file("mv", source, destination)
+end
+
 local function increment_saved_files()
 	FILES_SAVED = FILES_SAVED + 1
 end
 
-local function backup_current_file()
+local function copy_current_file()
 	file = get_current_file_relative_path()
 	msg.info(string.format("Current file is '%s'", file))
 	
 	output_path = create_backup_dir()
 
-	notify(2000, "Backing up current file...")
+	notify(2000, "Copying current file...")
 	copy_result, skipped = copy_file(file, output_path)
 	msg.info(copy_result)
 
@@ -73,6 +81,40 @@ local function backup_current_file()
 	notify(2000, string.format("Success! Total: %d", FILES_SAVED))
 end
 
+local function get_full_path(output_path, file)
+	filename, _ = file:gsub(".*/(.*)", "%1")
+	return output_path .. "/" .. filename
+end
+
+local function update_current_file_path_on_playlist_entry(path)
+	pos = mp.get_property_number("time-pos")
+	mp.commandv("loadfile", path, "replace", "start=" .. pos)
+end
+
+-- Almost identical functions for maintainability
+local function move_current_file()
+	file = get_current_file_relative_path()
+	msg.info(string.format("Current file is '%s'", file))
+	
+	output_path = create_backup_dir()
+
+	notify(2000, "Moving current file...")
+	move_result, skipped = move_file(file, output_path)
+	msg.info(move_result)
+
+	if not skipped then
+		full_path = get_full_path(output_path, file)
+		update_current_file_path_on_playlist_entry(full_path)
+
+		increment_saved_files()
+	end
+
+	msg.info(string.format("Output location is '%s'", output_path))
+	notify(2000, string.format("Success! Total: %d", FILES_SAVED))
+end
+
+mp.set_property("keep-open", "yes") -- Prevent mpv from exiting when the video ends
 mp.set_property("quiet", "yes") -- Silence terminal.
 
-mp.add_key_binding('Ctrl+s', "backup_current_file", backup_current_file)
+mp.add_key_binding('Ctrl+s', "move_current_file", move_current_file)
+mp.add_key_binding('Ctrl+d', "copy_current_file", copy_current_file)
