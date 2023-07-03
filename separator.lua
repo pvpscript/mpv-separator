@@ -26,8 +26,8 @@ local function get_current_file_relative_path()
 end
 
 local function execute_command(cmd, ...)
-	args = {...}
-	prepared_cmd = string.format(cmd, table.unpack(args))
+	local args = {...}
+	local prepared_cmd = string.format(cmd, table.unpack(args))
 
 	return io.popen(prepared_cmd):read("*l")
 end
@@ -44,9 +44,9 @@ local function create_backup_dir()
 end
 
 local function operate_file(op, source, destination)
-	result = execute_command('%s -nv "%s" "%s"', op, source, destination)
+	local result = execute_command('%s -nv "%s" "%s"', op, source, destination)
 	
-	skipped, _ = result:find('^skipped')
+	local skipped, _ = result:find('^skipped')
 
 	return result, skipped == 1
 end
@@ -64,13 +64,13 @@ local function increment_saved_files()
 end
 
 local function copy_current_file()
-	file = get_current_file_relative_path()
+	local file = get_current_file_relative_path()
 	msg.info(string.format("Current file is '%s'", file))
 	
-	output_path = create_backup_dir()
+	local output_path = create_backup_dir()
 
 	notify(2000, "Copying current file...")
-	copy_result, skipped = copy_file(file, output_path)
+	local copy_result, skipped = copy_file(file, output_path)
 	msg.info(copy_result)
 
 	if not skipped then
@@ -82,28 +82,28 @@ local function copy_current_file()
 end
 
 local function get_full_path(output_path, file)
-	filename, _ = file:gsub(".*/(.*)", "%1")
+	local filename, _ = file:gsub(".*/(.*)", "%1")
 	return output_path .. "/" .. filename
 end
 
 local function update_current_file_path_on_playlist_entry(path)
-	pos = mp.get_property_number("time-pos")
+	local pos = mp.get_property_number("time-pos")
 	mp.commandv("loadfile", path, "replace", "start=" .. pos)
 end
 
 -- Almost identical functions for maintainability
 local function move_current_file()
-	file = get_current_file_relative_path()
+	local file = get_current_file_relative_path()
 	msg.info(string.format("Current file is '%s'", file))
 	
-	output_path = create_backup_dir()
+	local output_path = create_backup_dir()
 
 	notify(2000, "Moving current file...")
 	move_result, skipped = move_file(file, output_path)
 	msg.info(move_result)
 
 	if not skipped then
-		full_path = get_full_path(output_path, file)
+		local full_path = get_full_path(output_path, file)
 		update_current_file_path_on_playlist_entry(full_path)
 
 		increment_saved_files()
