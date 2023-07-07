@@ -111,5 +111,5 @@ end
 mp.set_property("keep-open", "yes") -- Prevent mpv from exiting when the video ends
 mp.set_property("quiet", "yes") -- Silence terminal.
 
-mp.add_key_binding('Ctrl+s', "move_current_file", move_current_file)
+mp.add_key_binding('Ctrl+m', "move_current_file", move_current_file)
 mp.add_key_binding('Ctrl+d', "copy_current_file", copy_current_file)
