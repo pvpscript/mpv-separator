@@ -9,16 +9,11 @@ local OUTPUT_LOCATION = mp.get_property("working-directory")
 local BACKUP_LOCATION = ""
 local FILES_SAVED = 0
 
-local function notify(duration, ...)
-	local args = {...}
-	local text = ""
+local function notify(message, duration)
+	local duration = duration or 2
 
-	for i, v in ipairs(args) do
-		text = text .. tostring(v)
-	end
-
-	msg.info(text)
-	mp.command(string.format("show-text \"%s\" %d 1", text, duration))
+	msg.info(message)
+	mp.osd_message(message, duration)
 end
 
 local function get_current_file_relative_path()
@@ -69,7 +64,7 @@ local function copy_current_file()
 	
 	local output_path = create_backup_dir()
 
-	notify(2000, "Copying current file...")
+	notify("Copying current file...")
 	local copy_result, skipped = copy_file(file, output_path)
 	msg.info(copy_result)
 
@@ -78,7 +73,7 @@ local function copy_current_file()
 	end
 
 	msg.info(string.format("Output location is '%s'", output_path))
-	notify(2000, string.format("Success! Total: %d", FILES_SAVED))
+	notify(string.format("Success! Total: %d", FILES_SAVED))
 end
 
 local function get_full_path(output_path, file)
@@ -98,7 +93,7 @@ local function move_current_file()
 	
 	local output_path = create_backup_dir()
 
-	notify(2000, "Moving current file...")
+	notify("Moving current file...")
 	move_result, skipped = move_file(file, output_path)
 	msg.info(move_result)
 
@@ -110,7 +105,7 @@ local function move_current_file()
 	end
 
 	msg.info(string.format("Output location is '%s'", output_path))
-	notify(2000, string.format("Success! Total: %d", FILES_SAVED))
+	notify(string.format("Success! Total: %d", FILES_SAVED))
 end
 
 mp.set_property("keep-open", "yes") -- Prevent mpv from exiting when the video ends
