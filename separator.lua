@@ -3,8 +3,8 @@ local msg = require "mp.msg"
 
 table.unpack = table.unpack or unpack -- Workaround for Lua 5.1
 
-local OUTPUT_LOCATION = mp.get_property("working-directory")
-						or os.getenv("MPV_SEPARATOR_OUTPUT")
+local OUTPUT_LOCATION = os.getenv("MPV_SEPARATOR_OUTPUT")
+						or mp.get_property("working-directory")
 
 local BACKUP_LOCATION = ""
 local FILES_SAVED = 0
