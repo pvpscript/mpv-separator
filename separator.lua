@@ -82,8 +82,23 @@ local function get_full_path(output_path, file)
 end
 
 local function update_current_file_path_on_playlist_entry(path)
-	local pos = mp.get_property_number("time-pos")
-	mp.commandv("loadfile", path, "replace", "start=" .. pos)
+	local playlist_count = mp.get_property_number("playlist-count")
+	local curr_video_pos = mp.get_property_number("playlist-pos")
+	local time_pos = mp.get_property_number("time-pos")
+
+	mp.commandv("loadfile", path, "append")
+
+	mp.commandv("playlist-move", playlist_count, curr_video_pos)
+	mp.commandv("playlist-remove", curr_video_pos + 1)
+	mp.commandv("playlist-play-index", curr_video_pos)
+
+	local function action()
+		mp.set_property_number("time-pos", time_pos)
+		mp.unregister_event(action)
+		mp.unregister_event("file-loaded", action)
+	end
+
+	mp.register_event("file-loaded", action)
 end
 
 -- Almost identical functions for maintainability
