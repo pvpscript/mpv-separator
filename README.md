@@ -1,5 +1,5 @@
 # mpv-separator
-Interactively separate the videos you wanna keep from a given playlist
+Interactively copy of move the videos you wanna keep from a given playlist
 
 ## Description
 This script helps you organize your playlists by giving you the hability to
