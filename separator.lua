@@ -1,5 +1,6 @@
 local mp = require "mp"
 local msg = require "mp.msg"
+local utils = require "mp.utils"
 
 table.unpack = table.unpack or unpack -- Workaround for Lua 5.1
 
@@ -78,7 +79,8 @@ end
 
 local function get_full_path(output_path, file)
 	local filename, _ = file:gsub(".*/(.*)", "%1")
-	return output_path .. "/" .. filename
+
+	return utils.join_path(output_path, filename)
 end
 
 local function update_current_file_path_on_playlist_entry(path)
