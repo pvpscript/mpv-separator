@@ -5,7 +5,7 @@ local utils = require "mp.utils"
 table.unpack = table.unpack or unpack -- Workaround for Lua 5.1
 
 local OUTPUT_LOCATION = os.getenv("MPV_SEPARATOR_OUTPUT")
-						or mp.get_property("working-directory")
+			or mp.get_property("working-directory")
 
 local BACKUP_LOCATION = ""
 local FILES_SAVED = 0
